@@ -1,12 +1,10 @@
-import streamlit as st
+import altair as alt
 import pandas as pd
-import matplotlib.pyplot as plt
+import streamlit as st
 from millify import millify
 
 # Make most out of the space available
 st.set_page_config(layout="wide")
-# Matplotlib styling
-plt.style.use("ggplot")
 
 # Open dataset as a pandas dataframe
 df = pd.read_csv(
@@ -33,9 +31,31 @@ with col12:
 container2 = st.container(border=True)
 col21, col22 = container2.columns([0.6, 0.4])
 with col21:
-    st.bar_chart(df, x="Temperature(°C)", y="Rented Bike Count", height=550)
+    st.bar_chart(df, x="Seasons", y="Rented Bike Count")
 
 with col22:
-    fig, ax = plt.subplots()
-    ax.pie([35, 25, 25, 15])
-    st.pyplot(fig, transparent=True)
+    grp_by_seasons = df.groupby("Seasons")["Rented Bike Count"].sum()
+    grp_by_seasons = grp_by_seasons.reset_index()
+    print(grp_by_seasons)
+    ac = (
+        alt.Chart(grp_by_seasons)
+        .mark_arc()
+        .encode(
+            theta="Rented Bike Count",
+            color="Seasons",
+        )
+    )
+    st.altair_chart(ac)
+
+# The third container with a scatter plot
+container3 = st.container()
+with container3:
+    bubble_size = st.slider("Bubble Size", 0, 200, 25)
+    st.scatter_chart(
+        df,
+        x="Rented Bike Count",
+        y=["Temperature(°C)", "Dew point temperature(°C)"],
+        height=600,
+        size=bubble_size,
+        color=["#348abd", "#e24a33"],
+    )
