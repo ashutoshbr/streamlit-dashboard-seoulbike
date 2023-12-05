@@ -1,18 +1,19 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
+import matplotlib.pyplot as plt
 from millify import millify
-
 
 # Make most out of the space available
 st.set_page_config(layout="wide")
+# Matplotlib styling
+plt.style.use("ggplot")
 
 # Open dataset as a pandas dataframe
 df = pd.read_csv(
     "./SeoulBikeData.csv",
     encoding="unicode_escape",
     parse_dates=["Date"],
-    date_parser=lambda x: datetime.strptime(x, "%d/%m/%Y"),
+    date_format="%d/%m/%Y",
 )
 
 # The first container with two metrics and a line chart
@@ -27,3 +28,14 @@ with col11:
     st.metric(label="Hours Ridden", value=millify(hours_ridden, precision=2))
 with col12:
     st.line_chart(df, x="Date", y="Rented Bike Count")
+
+# The second container with a bar chart & a pie chart
+container2 = st.container(border=True)
+col21, col22 = container2.columns([0.6, 0.4])
+with col21:
+    st.bar_chart(df, x="Temperature(°C)", y="Rented Bike Count", height=550)
+
+with col22:
+    fig, ax = plt.subplots()
+    ax.pie([35, 25, 25, 15])
+    st.pyplot(fig, transparent=True)
