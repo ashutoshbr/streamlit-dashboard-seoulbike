@@ -14,6 +14,12 @@ df = pd.read_csv(
     date_format="%d/%m/%Y",
 )
 
+
+def normalize_column(col) -> None:
+    max_value = df[col].max()
+    df["Normalized" + " " + col] = df[col].div(max_value)
+
+
 # The first container with two metrics and a line chart
 container1 = st.container()
 col11, col12 = container1.columns([0.15, 0.85])
@@ -50,24 +56,41 @@ with col22:
 # The third container with a scatter plot
 container3 = st.container(border=True)
 with container3:
-    bubble_size = st.slider("Bubble Size", 0, 200, 25)
+    normalize_column("Rainfall(mm)")
+    normalize_column("Snowfall (cm)")
+    bubble_size = st.slider("Bubble Size", 0, 200, 50)
     st.scatter_chart(
         df,
         x="Rented Bike Count",
-        y=["Temperature(°C)", "Dew point temperature(°C)"],
-        height=600,
+        y=["Normalized Rainfall(mm)", "Normalized Snowfall (cm)"],
         size=bubble_size,
         color=["#348abd", "#e24a33"],
     )
 
 # Fourth container with a bar chart and a scatter plot
 container4 = st.container(border=True)
-col41, col42 = container4.columns([0.5, 0.5])
+col41, col42, col43 = container4.columns([0.33, 0.33, 0.33])
 with col41:
     st.bar_chart(df, x="Holiday", y="Rented Bike Count")
 with col42:
     st.scatter_chart(
         df,
-        x="Rainfall(mm)",
+        x="Wind speed (m/s)",
         y="Rented Bike Count",
     )
+with col43:
+    st.scatter_chart(
+        df,
+        x="Solar Radiation (MJ/m2)",
+        y="Rented Bike Count",
+    )
+
+# Bubble plot
+container5 = st.container(border=True)
+with container5:
+    ac = (
+        alt.Chart(df, height=600)
+        .mark_point()
+        .encode(x="Temperature(°C)", y="Rented Bike Count", size="Hour")
+    )
+    st.altair_chart(ac, use_container_width=True)
