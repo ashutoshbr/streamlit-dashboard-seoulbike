@@ -48,7 +48,7 @@ with col22:
     st.altair_chart(ac)
 
 # The third container with a scatter plot
-container3 = st.container()
+container3 = st.container(border=True)
 with container3:
     bubble_size = st.slider("Bubble Size", 0, 200, 25)
     st.scatter_chart(
@@ -58,4 +58,16 @@ with container3:
         height=600,
         size=bubble_size,
         color=["#348abd", "#e24a33"],
+    )
+
+# Fourth container with a bar chart and a scatter plot
+container4 = st.container(border=True)
+col41, col42 = container4.columns([0.5, 0.5])
+with col41:
+    st.bar_chart(df, x="Holiday", y="Rented Bike Count")
+with col42:
+    st.scatter_chart(
+        df,
+        x="Rainfall(mm)",
+        y="Rented Bike Count",
     )
