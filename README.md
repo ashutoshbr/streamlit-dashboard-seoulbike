@@ -9,4 +9,4 @@ pip install -r requirements.txt
 streamlit run main.py
 # Opens http://localhost:8501/ url in the browser
 ```
-![Screenshot](./assets/screenshot.png)
+![Dashboard](./assets/dashboard.png)
