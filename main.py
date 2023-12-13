@@ -31,7 +31,8 @@ with col11:
     )
     st.metric(label="Hours Ridden", value=millify(hours_ridden, precision=2))
 with col12:
-    st.line_chart(df, x="Date", y="Rented Bike Count")
+    grp = df.groupby("Date").sum().reset_index()
+    st.line_chart(grp, x="Date", y="Rented Bike Count")
 
 # The second container with a bar chart & a pie chart
 container2 = st.container(border=True)
@@ -40,8 +41,7 @@ with col21:
     st.bar_chart(df, x="Seasons", y="Rented Bike Count")
 
 with col22:
-    grp_by_seasons = df.groupby("Seasons")["Rented Bike Count"].sum()
-    grp_by_seasons = grp_by_seasons.reset_index()
+    grp_by_seasons = df.groupby("Seasons")["Rented Bike Count"].sum().reset_index()
     print(grp_by_seasons)
     ac = (
         alt.Chart(grp_by_seasons)
