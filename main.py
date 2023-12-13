@@ -23,6 +23,9 @@ def normalize_column(col) -> None:
 # The first container with two metrics and a line chart
 container1 = st.container()
 col11, col12 = container1.columns([0.15, 0.85])
+# Per day grouping
+grp = df.groupby("Date").sum().reset_index()
+
 with col11:
     total_rented_bikes = df["Rented Bike Count"].sum()
     hours_ridden = df["Hour"].sum()
@@ -30,8 +33,8 @@ with col11:
         label="Total Bikes Rented", value=millify(total_rented_bikes, precision=2)
     )
     st.metric(label="Hours Ridden", value=millify(hours_ridden, precision=2))
+    st.metric(label="Max Bikes Rented Per Day", value=grp["Rented Bike Count"].max())
 with col12:
-    grp = df.groupby("Date").sum().reset_index()
     st.line_chart(grp, x="Date", y="Rented Bike Count")
 
 # The second container with a bar chart & a pie chart
@@ -39,7 +42,6 @@ container2 = st.container(border=True)
 col21, col22 = container2.columns([0.6, 0.4])
 with col21:
     st.bar_chart(df, x="Seasons", y="Rented Bike Count")
-
 with col22:
     grp_by_seasons = df.groupby("Seasons")["Rented Bike Count"].sum().reset_index()
     print(grp_by_seasons)
@@ -69,7 +71,7 @@ with container3:
 
 # Fourth container with a bar chart and a scatter plot
 container4 = st.container(border=True)
-col41, col42, col43 = container4.columns([0.33, 0.33, 0.33])
+col41, col42, col43 = container4.columns(3)
 with col41:
     st.bar_chart(df, x="Holiday", y="Rented Bike Count")
 with col42:
