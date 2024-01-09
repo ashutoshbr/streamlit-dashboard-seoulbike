@@ -1,5 +1,6 @@
 ## Streamlit Dashboard for seoulbike dataset
 
+[Report](./assets/Report.pdf)
 ```bash
 # dependency: streamlit, millify
 pip install -r requirements.txt
